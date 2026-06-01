@@ -43,7 +43,7 @@ public class TimeOfDay implements Comparable<TimeOfDay> {
 
     @Override
     public String toString() {
-        if (minutes < 10 ) {
+        if (minutes < 10) {
             return getHours() + ":0" + getMinutes();
         }
         return getHours() + ":" + getMinutes();
