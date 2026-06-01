@@ -25,4 +25,12 @@ public class Group {
     public int getDuration() {
         return duration;
     }
+
+    @Override
+    public String toString() {
+        if (getAge() == Age.ADULT) {
+            return getTitle() + ", взрослая, длительность: " + getDuration() + " минут";
+        }
+        return getTitle() + ", детская , длительность: " + getDuration() + " минут";
+    }
 }
