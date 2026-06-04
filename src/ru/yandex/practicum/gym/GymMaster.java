@@ -1,12 +1,13 @@
 package ru.yandex.practicum.gym;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
 
 public class GymMaster {
     public static Timetable timetable = new Timetable();
+    public static Map<String, Coach> coachMap = new HashMap<>();
+    public static Map<String, DayOfWeek> dayOfWeekMap = new HashMap<>();
     public static Coach semenov = new Coach("Семёнов", "Виктор", "Константинович");
     public static Coach smirnov = new Coach("Смирнов", "Николай", "Александрович");
     public static Coach mironov = new Coach("Миронов", "Юрий", "Борисович");
@@ -14,11 +15,24 @@ public class GymMaster {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        coachMap.put("Семёнов Виктор Константинович", semenov);
+        coachMap.put("Смирнов Николай Александрович", smirnov);
+        coachMap.put("Миронов Юрий Борисович", mironov);
+        coachMap.put("Морев Евгений Васильевич", morev);
+
+        dayOfWeekMap.put("Понедельник", DayOfWeek.MONDAY);
+        dayOfWeekMap.put("Вторник", DayOfWeek.TUESDAY);
+        dayOfWeekMap.put("Среда", DayOfWeek.WEDNESDAY);
+        dayOfWeekMap.put("Четверг", DayOfWeek.THURSDAY);
+        dayOfWeekMap.put("Пятница", DayOfWeek.FRIDAY);
+        dayOfWeekMap.put("Суббота", DayOfWeek.SATURDAY);
+        dayOfWeekMap.put("Воскресенье", DayOfWeek.SUNDAY);
+
         boolean running = true;
-        while(running) {
+        while (running) {
             printMenu();
             int choice = Integer.parseInt(scanner.nextLine());
-            switch(choice) {
+            switch (choice) {
                 case 1:
                     addNewTrainSession(scanner);
                 break;
@@ -85,23 +99,13 @@ public class GymMaster {
 
     public static Coach addCoachInTrainSession(Scanner scanner) {
         Coach coach = null;
-        System.out.println("Выберете тренера, который будет вести тренировку:");
-        System.out.println("1 - Семёнов В.К.");
-        System.out.println("2 - Смирнов Н.А.");
-        System.out.println("3 - Миронов Ю.Б.");
-        System.out.println("4 - Морев Е.В.");
-        int choice = Integer.parseInt(scanner.nextLine());
-        while(coach == null) {
-            if (choice == 1) {
-                coach = semenov;
-            } else if (choice == 2) {
-                coach = smirnov;
-            } else if (choice == 3) {
-                coach = mironov;
-            } else if (choice == 4) {
-                coach = morev;
+        System.out.println("Введите ФИО тренера, который будет вести тренировку:");
+        while (coach == null) {
+            String choice = scanner.nextLine();
+            if (coachMap.containsKey(choice)) {
+                coach = coachMap.get(choice);
             } else {
-                System.out.println("Такой тренер не работает в нашем зале!");
+                System.out.println("Проверьте правильность ввода!");
             }
         }
         return coach;
@@ -109,23 +113,11 @@ public class GymMaster {
 
     public static DayOfWeek addDayOfWeek(Scanner scanner) {
         DayOfWeek dayOfWeek = null;
-        System.out.println("Укажите день недели цифрой от 1 до 7:");
-        int choice = Integer.parseInt(scanner.nextLine());
+        System.out.println("Укажите день недели: ");
         while (dayOfWeek == null) {
-            if (choice == 1) {
-                dayOfWeek = DayOfWeek.MONDAY;
-            } else if (choice == 2) {
-                dayOfWeek = DayOfWeek.TUESDAY;
-            } else if (choice == 3) {
-                dayOfWeek = DayOfWeek.WEDNESDAY;
-            } else if (choice == 4) {
-                dayOfWeek = DayOfWeek.THURSDAY;
-            } else if (choice == 5) {
-                dayOfWeek = DayOfWeek.FRIDAY;
-            } else if (choice == 6) {
-                dayOfWeek = DayOfWeek.SATURDAY;
-            } else if (choice == 7) {
-                dayOfWeek = DayOfWeek.SUNDAY;
+            String choice = scanner.nextLine();
+            if (dayOfWeekMap.containsKey(choice)) {
+                dayOfWeek = dayOfWeekMap.get(choice);
             } else {
                 System.out.println("Проверьте правильность ввода дня недели!");
             }
@@ -153,7 +145,7 @@ public class GymMaster {
         DayOfWeek dayOfWeek = addDayOfWeek(scanner);
 
         System.out.println("Список всех тренировок в " + dayOfWeek);
-        if (timetable.getTrainingSessionsForDay(dayOfWeek) == null) {
+        if (timetable.getTrainingSessionsForDay(dayOfWeek).isEmpty()) {
             System.out.println("К сожалению, в выбранный день нет тренировок!");
         } else {
             timetable.getTrainingSessionsForDay(dayOfWeek).forEach((timeOfDay, list) -> System.out.println(timeOfDay.toString() + "\n" + list));
@@ -165,9 +157,9 @@ public class GymMaster {
         TimeOfDay timeOfDay = addTimeOfDay(scanner);
 
         System.out.println("Список всех тренировок в " + dayOfWeek + " " + timeOfDay.toString() + ":");
-        if (timetable.getTrainingSessionsForDay(dayOfWeek) == null) {
+        if (timetable.getTrainingSessionsForDay(dayOfWeek).isEmpty()) {
             System.out.println("К сожалению, в выбранный день нет тренировок!");
-        } else if (timetable.getTrainingSessionsForDayAndTime(dayOfWeek, timeOfDay) == null) {
+        } else if (timetable.getTrainingSessionsForDayAndTime(dayOfWeek, timeOfDay).isEmpty()) {
             System.out.println("К сожалению, в это время нет тренировок!");
         } else {
             System.out.println(timetable.getTrainingSessionsForDayAndTime(dayOfWeek, timeOfDay));
