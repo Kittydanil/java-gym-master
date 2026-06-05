@@ -13,20 +13,22 @@ public class Timetable {
         TreeMap<TimeOfDay, List<TrainingSession>> training = timetable.get(trainingSession.getDayOfWeek());
         List<TrainingSession> list = new ArrayList<>();
         if (training == null) {
-            training.put(trainingSession.getTimeOfDay(), list);
-            timetable.get(trainingSession.getDayOfWeek()).get(trainingSession.getTimeOfDay()).add(trainingSession);
-        } else {
             training = new TreeMap<>();
             list.add(trainingSession);
             training.put(trainingSession.getTimeOfDay(), list);
             timetable.put(trainingSession.getDayOfWeek(), training);
+        } else {
+            if (!training.containsKey(trainingSession.getTimeOfDay())) {
+                training.put(trainingSession.getTimeOfDay(), list);
+            }
+            timetable.get(trainingSession.getDayOfWeek()).get(trainingSession.getTimeOfDay()).add(trainingSession);
         }
+
     }
 
     public TreeMap<TimeOfDay, List<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
         if (timetable.get(dayOfWeek) == null) {
-            TreeMap<TimeOfDay, List<TrainingSession>> empty = new TreeMap<>();
-            return empty;
+            return new TreeMap<>();
         } else {
             return timetable.get(dayOfWeek);
         }
@@ -34,7 +36,7 @@ public class Timetable {
 
     public List<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
         if (timetable.get(dayOfWeek).get(timeOfDay) == null) {
-            return List.of();
+            return new ArrayList<>();
         } else {
             return timetable.get(dayOfWeek).get(timeOfDay);
         }
